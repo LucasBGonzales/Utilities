@@ -17,21 +17,24 @@ import javax.swing.SpringLayout;
 public class Dialogs {
 
 	/**
-	 * Shows an InputAreaDialog box that allows the user to type a
-	 * response into a scroll-able JTextArea.
+	 * Shows an InputAreaDialog box that allows the user to type a response into a
+	 * scroll-able JTextArea.
 	 * 
 	 * @param parent       The Frame this InputAreaDialog will be tied to.
 	 * @param messsage     The message to display with this Dialog.
-	 * @param initialValue The value to place into the JTextArea when the
-	 *                     dialog opens.
-	 * @param modal        If true, the window will be modal and thus
-	 *                     prevent interaction with the parent frame.
-	 *                     Else, it will be modeless and allow interaction
-	 *                     with the parent frame.
+	 * @param initialValue The value to place into the JTextArea when the dialog
+	 *                     opens.
+	 * @param modal        If true, the window will be modal and thus prevent
+	 *                     interaction with the parent frame. Else, it will be
+	 *                     modeless and allow interaction with the parent frame.
 	 * @return {@code String} of the user's response.
 	 */
 	public static String showInputAreaDialog(Frame parent, String message, String initialValue) {
 		return (new InputAreaDialog(parent, message, initialValue)).showDialog();
+	}
+	
+	public static void main(String[] args) {
+		showInputAreaDialog(null, "Test","");
 	}
 
 
