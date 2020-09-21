@@ -1,0 +1,26 @@
+first line,data, entry.
+second,line,data,entry,test123,
+# hello but ignore me
+""hello"" i said, # and ignore me.
+"hi", hello, """Hi"" he said", 1232 # Dude perfect
+"#testme",""and, me""
+
+Dictionary:
+
+word,"Grammar definition;grammar definition;etc","language translation;language translation"
+
+lac,"noun this fluid appearing in or flowing from the eye as the result of emotion, especially grief;noun a rent or fissure;verb to become torn","english tear"
+vjis,"noun the solid form of water;verb to cover with ice","english ice"
+
+Roots:
+root,"word;word","meaning"
+suffix,"word;word","meaning"
+
+root,"a;an","not, without"
+root,"a","on"
+root,"agr;agri;agro","farming"
+root,"ana","up, back, against, again, thorughout"
+suffix,"able","able to be"
+suffix,"aholic;oholic","one with an obsession for"
+suffix,"ant","a person who, inclined to, tending to"
+suffix,"ary","of or relating to"
