@@ -12,10 +12,11 @@ class MultiDimensionalArrayList<E> {
 
 
 	public void testDriver() {
-		/*
-		 * TODO Last thing to do is allow contraction. List can be added to and
-		 * expanded, but I can not remove from lists yet.
-		 */
+		// TODO how do I iterate through everything if I don't know the dimensions?
+		// Perhaps a method to return the dimensions... then, utilizing class uses a
+		// loop that iterates an increasing array for indices up to that dimension?
+		// Perhaps not even. Just use get() for increasing size until there is no more
+		// valid sizes?
 		MultiDimensionalArrayList<String> md_arr = new MultiDimensionalArrayList<String>();
 
 		md_arr.add("testAdd(0)", 0);
@@ -36,6 +37,54 @@ class MultiDimensionalArrayList<E> {
 		System.out.println(md_arr.sizeList(0, 0, 0, 0));
 		System.out.println(md_arr.sizeObjects(0));
 		System.out.println("toString():\n" + md_arr.toString());
+		md_arr.remove(0);
+		md_arr.remove(1, 1, 0);
+		System.out.println("toString():\n" + md_arr.toString());
+
+		List<Integer> indices = new ArrayList<Integer>();
+
+		System.out.println("Test Iteration");
+
+
+		// How to iterate through all objects sequentially??
+		boolean stop = false;
+		while (!stop) {
+			indices.add(0);
+
+			// Iterate through each dimension
+			for (int dim_iterator = indices.size() - 2; dim_iterator >= 0 || indices.size() == 1;) {
+
+				// Iterate through each object in dimension
+				for (int index_iterator = 0;; index_iterator++) {
+					indices.set(indices.size() - 1, index_iterator);
+					try {
+						System.out.println(md_arr.get(indices));
+					} catch (Exception e) {
+						if (index_iterator == 0)
+							stop = true;
+						indices.set(indices.size() - 1, 0);
+						break;
+					}
+				}
+				
+				if(indices.size() == 1)
+				{
+					stop = false;
+					break;
+				}
+				
+				indices.set(dim_iterator, indices.get(dim_iterator) + 1);
+				if (md_arr.sizeList(indices) <= 0)
+				{
+					indices.set(dim_iterator, 0);
+					dim_iterator--;
+					continue;
+				}
+				else
+					stop = false;
+
+			}
+		}
 	}
 
 
@@ -60,8 +109,18 @@ class MultiDimensionalArrayList<E> {
 	}
 
 
+	public int sizeList(List<Integer> indices) {
+		return m_primaryDataPoint.sizeList(new ArrayList<Integer>(indices));
+	}
+
+
 	public int sizeObjects(int... indices) {
 		return m_primaryDataPoint.sizeObjects(getIndicesArray(indices));
+	}
+
+
+	public int sizeObjects(List<Integer> indices) {
+		return m_primaryDataPoint.sizeObjects(new ArrayList<Integer>(indices));
 	}
 
 
@@ -81,6 +140,36 @@ class MultiDimensionalArrayList<E> {
 
 
 	/**
+	 * Returns the object at the given index.
+	 * 
+	 * @param indices The location of the object you want to collect from this
+	 *                DataPoint.
+	 * @return {@code Object} at the given location.
+	 * @throws RuntimeException               if the indices List is null.
+	 * @throws ArrayIndexOutOfBoundsException if the indices given are
+	 *                                        out-of-bounds.
+	 */
+	public E get(List<Integer> indices) throws RuntimeException, ArrayIndexOutOfBoundsException {
+		return m_primaryDataPoint.get(new ArrayList<Integer>(indices));
+	}
+
+
+	/**
+	 * 
+	 * @param The index of the item to be removed.
+	 * @return Returns the object that was removed from the list.
+	 * @param The index of the item to be removed.
+	 * @return Returns the object that was removed from the list.
+	 * @throws RuntimeException               if the indices List is null.
+	 * @throws ArrayIndexOutOfBoundsException if the indices given are
+	 *                                        out-of-bounds.
+	 */
+	public E remove(int... indices) throws RuntimeException, ArrayIndexOutOfBoundsException {
+		return m_primaryDataPoint.remove(getIndicesArray(indices));
+	}
+
+
+	/**
 	 * Adds the given object to the DataPoint at the given index.
 	 * 
 	 * @param obj     Object to add to DataPoint.
@@ -89,8 +178,7 @@ class MultiDimensionalArrayList<E> {
 	 */
 	public void add(E obj, int... indices) throws RuntimeException {
 		if (indices == null)
-			m_primaryDataPoint.add(obj, new ArrayList<Integer>() {
-			});
+			m_primaryDataPoint.add(obj, new ArrayList<Integer>(0));
 		else
 			m_primaryDataPoint.add(obj, getIndicesArray(indices));
 	}
@@ -197,6 +285,39 @@ class MultiDimensionalArrayList<E> {
 
 				// Add to DataPoint at this_index.
 				m_dataList.get(this_index).add(obj, indices);
+			}
+		}
+
+
+		/**
+		 * 
+		 * @param The index of the item to be removed.
+		 * @return Returns the object that was removed from the list.
+		 * @throws RuntimeException               if the indices List is null.
+		 * @throws ArrayIndexOutOfBoundsException if the indices given are
+		 *                                        out-of-bounds.
+		 */
+		private E remove(List<Integer> indices) throws RuntimeException, ArrayIndexOutOfBoundsException {
+			if (indices == null)
+				throw new RuntimeException("Null Indices Array: Must be non-null");
+
+			// If one index, this is the DataPoint to get the Object from.
+			if (indices.size() == 1)
+				return m_dataObjects.remove(indices.get(0).intValue());
+			else {
+				// Else, get the next index, remove it from indices array, then get the object
+				// of that index's DataPoint using the reduced indices array.
+
+				// Get Index & Remove it.
+				int this_index = indices.get(0);
+				indices.remove(0);
+
+				// Check this_index exists
+				if (m_dataList.size() <= this_index)
+					throw new ArrayIndexOutOfBoundsException("Index From " + indices.toString() + " is Out-Of-Bounds.");
+				else
+					// Get DataPoint from this_index.
+					return m_dataList.get(this_index).remove(indices);
 			}
 		}
 
