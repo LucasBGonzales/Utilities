@@ -80,7 +80,7 @@ public class FileSearch {
 
 
 	public static void main(String[] a) {
-		Log.println(getNestedFiles(new File("D:\\Development\\Eclipse\\Eclipse Workspace\\Translator\\Languages"), 1,
+		Log.println(getNestedFiles(new File("D:\\My Stuff\\Documents\\Sourcetree\\LanguageConstructionKit"), -1,
 				new String[] { "xml" }, false).toString());
 	}
 }
