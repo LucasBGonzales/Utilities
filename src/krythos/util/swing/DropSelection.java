@@ -196,6 +196,7 @@ public class DropSelection {
 	private ComponentAdapter m_componentAdapter;
 	private int m_selectedIndex;
 	private int m_listLimit;
+	private boolean m_hide_temporary;
 
 
 	// Window Variables
@@ -276,7 +277,7 @@ public class DropSelection {
 	 * @return
 	 */
 	public boolean isVisible() {
-		return m_lstLabels.size() > 0 ? m_lstLabels.get(0).isVisible() : false;
+		return m_lstLabels.size() > 0 ? m_lstLabels.get(0).isVisible() && m_visible : false;
 	}
 
 
@@ -377,26 +378,25 @@ public class DropSelection {
 			public void keyReleased(KeyEvent e) {
 
 				if (e.getSource().equals(m_txtComponent)) {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						if (m_selectedIndex > 0)
-							setSelectedIndex(m_selectedIndex - 1);
+						if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_UP) {
+							if (m_selectedIndex > 0)
+								setSelectedIndex(m_selectedIndex - 1);
 
-					} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-						if (m_selectedIndex < m_lstLabels.size() - 1)
-							setSelectedIndex(m_selectedIndex + 1);
+						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_DOWN) {
+							if (m_selectedIndex < m_lstLabels.size() - 1)
+								setSelectedIndex(m_selectedIndex + 1);
 
-					} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						if (isVisible())
-							itemSelected(m_lstLabels.get(m_selectedIndex));
+						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_ENTER) {
+							if (m_lstLabels.size() > 0 && isVisible())
+								itemSelected(m_lstLabels.get(m_selectedIndex));
 
-					} else if (e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU)
-						setVisible(!isVisible());
-
-					else {
-						setVisible(true);
-						calcDisplayList();
-						updateUI();
-					}
+						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU || e.getKeyCode() == KeyEvent.VK_ESCAPE)
+							setVisible(!isVisible());
+						else {
+							setVisible(true);
+							calcDisplayList();
+							updateUI();
+						}
 				}
 			}
 

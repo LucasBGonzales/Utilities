@@ -18,5 +18,4 @@ public abstract class AbsKeyListener implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
-
 }

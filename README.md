@@ -28,6 +28,5 @@ My debug logger. Can be used to print messages directly to console, or set speci
 
 Where I'm putting custom Swing GUI stuff.
 
-* CComboBox. This is a work-in-progress. Trying to create a good drop-down list.
 * Dialogs. These are custom dialog boxes. So far, only one. InputAreaDialog uses a JTextArea to gather a String from the user in such a manner that the user can use multiple lines. The box is resizable.
 * DropSelection. WIP, but mostly working as intended. It creates a drop-down selection menu for a JTextComponent. You define a list of options, those options are displayed based on what the user is typing, you can limit how many are shown at once, and it uses listeners to know when something was selected. At present, it only works on JInternalFrames (I was developing it for use in a JInternalFrame), but I intend to try and make it universal to JFrames or JInternalFrames.

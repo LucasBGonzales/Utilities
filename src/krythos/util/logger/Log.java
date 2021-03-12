@@ -99,46 +99,46 @@ public class Log {
 	}
 
 
-	public static void debug(String tag, String message) {
-		message = "[DEBUG] [" + tag.trim() + "] " + message.trim();
+	public static void debug(Object source, String message) {
+		message = "[DEBUG] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_DEBUG)
 			println(message);
 	}
 
 
-	public static void warn(String tag, String message) {
-		message = "[WARNING] [" + tag.trim() + "] " + message.trim();
+	public static void warn(Object source, String message) {
+		message = "[WARNING] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_WARNING)
 			println(message);
 	}
 
 
-	public static void info(String tag, String message) {
-		message = "[INFO] [" + tag.trim() + "] " + message.trim();
+	public static void info(Object source, String message) {
+		message = "[INFO] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_INFO)
 			println(message);
 	}
 
 
-	public static void error(String tag, String message) {
-		message = "[ERROR] [" + tag.trim() + "] " + message.trim();
+	public static void error(Object source, String message) {
+		message = "[ERROR] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_ERROR)
 			println(message);
 	}
 
 
-	public static void throwRuntimeException(String tag, String message) {
-		error(tag, message);
-		throw new RuntimeException("[" + tag + "] " + message);
+	public static void throwRuntimeException(Object source, String message) {
+		error(source, message);
+		throw new RuntimeException("[" + source.toString() + "] " + message);
 	}
 
 
-	public static void throwRuntimeException(String tag, RuntimeException rte) {
-		error(tag, rte.getMessage());
+	public static void throwRuntimeException(Object source, RuntimeException rte) {
+		error(source, rte.getMessage());
 		throw rte;
 	}
 
