@@ -7,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
@@ -21,113 +24,34 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import krythos.util.abstract_interfaces.AbsComponentListener;
+import krythos.util.abstract_interfaces.AbsKeyListener;
 import krythos.util.abstract_interfaces.AbsMouseListener;
 import krythos.util.logger.Log;
 
 public class DropSelectionV2 {
-	private Component m_parent;
-	private Container m_container;
-	private Object[] m_items;
-	private DropSelectionFrame m_frame;
+	public class DropEvent {
+		private Object m_source;
+		private int m_index;
 
-	public static void main(String... args) {
-		Log.setLevel(Log.LEVEL_DEBUG);
-
-		JFrame f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JPanel contentPane = new JPanel();
-		f.setContentPane(contentPane);
+		public DropEvent(Object source, int index) {
+			m_source = source;
+			m_index = index;
+		}
 
 
-		JLabel lbl = new JLabel("Test Label");
-		DropSelectionV2 drop = new DropSelectionV2(f, lbl, "Test", "List", "Stuff", "Longer Test");
-		drop.addDropListener( e-> {
-			Log.printDialog(e.getSource().toString() + " at index " + e.getIndex());
-		});
-		drop.setVisible(false);
-		lbl.addMouseListener(new AbsMouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					Log.debug(this, "Right Click");
-					drop.setVisible(true);
-				}
-			}
-		});
+		public int getIndex() {
+			return m_index;
+		}
 
-		f.add(lbl);
 
-		f.pack();
-		f.setBounds(200, 200, 500, 500);
-		f.setVisible(true);
+		public Object getSource() {
+			return m_source;
+		}
 	}
 
-
-	public DropSelectionV2(Container container, Component parent, Object... items) {
-		m_container = container;
-		m_parent = parent;
-		m_items = items;
-		createFrame();
+	public interface DropListener {
+		public void itemSelected(DropEvent e);
 	}
-
-
-	/**
-	 * Adds {@code listener} for DropEvent triggers.
-	 * 
-	 * @param listener
-	 */
-	public void addDropListener(DropListener listener) {
-		m_frame.addDropListener(listener);
-	}
-
-
-	/**
-	 * Removes {@code listener} for DropEvent triggers.
-	 * 
-	 * @param listener
-	 */
-	public void removeDropListener(DropListener listener) {
-		m_frame.removeDropListener(listener);
-	}
-
-
-	/**
-	 * Returns {@code true} if the listener is contained in the DropListener list.
-	 * 
-	 * @param listener
-	 */
-	public void containsDropListener(DropListener listener) {
-		m_frame.containsDropListener(listener);
-	}
-
-
-	private void createFrame() {
-		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
-	}
-
-
-	/**
-	 * Replaces the items currently in the DropSelection.
-	 * 
-	 * @param items Items which will be displayed in the {@link DropSelection}. They
-	 *              are displayed as a {@code String}, as is returned by
-	 *              {@code Object.toString()}.
-	 */
-	public void setItems(Object... items) {
-		m_items = items;
-		createFrame();
-	}
-
-
-	/**
-	 * Manually set DropSelection visibility.
-	 * 
-	 * @param visible
-	 */
-	public void setVisible(boolean visible) {
-		m_frame.setVisible(visible);
-	}
-
 
 	@SuppressWarnings("serial")
 	private class DropSelectionFrame extends JWindow {
@@ -154,16 +78,16 @@ public class DropSelectionV2 {
 		}
 
 
-		public boolean removeDropListener(DropListener listener) {
-			return m_listeners.remove(listener);
-		}
-
-
 		public boolean containsDropListener(DropListener listener) {
 			for (DropListener l : m_listeners)
 				if (l.equals(listener))
 					return true;
 			return false;
+		}
+
+
+		public boolean removeDropListener(DropListener listener) {
+			return m_listeners.remove(listener);
 		}
 
 
@@ -217,6 +141,28 @@ public class DropSelectionV2 {
 			m_parent.addComponentListener(componentListener);
 			m_container.addComponentListener(componentListener);
 
+			m_container.addKeyListener(new AbsKeyListener() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+						setVisible(false);
+				}
+			});
+			this.addFocusListener(new FocusListener() {
+
+				@Override
+				public void focusGained(FocusEvent e) {
+					setVisible(true);
+				}
+
+
+				@Override
+				public void focusLost(FocusEvent e) {
+					setVisible(false);
+				}
+
+			});
+
 			// Set Initial Location
 			updateLocation();
 
@@ -227,8 +173,9 @@ public class DropSelectionV2 {
 		private void itemClicked(int index) {
 			// TODO DropEvents
 			Log.debug(this, "Item Clicked:" + m_items[index].toString());
-			for(DropListener dl : m_listeners)
-				dl.dropSelected(new DropEvent(m_items[index],index));
+			for (DropListener dl : m_listeners)
+				dl.itemSelected(new DropEvent(m_items[index], index));
+			this.setVisible(false);
 		}
 
 
@@ -245,28 +192,106 @@ public class DropSelectionV2 {
 		}
 	}
 
+	public static void main(String... args) {
+		Log.setLevel(Log.LEVEL_DEBUG);
 
-	public class DropEvent {
-		private Object m_source;
-		private int m_index;
-
-		public DropEvent(Object source, int index) {
-			m_source = source;
-			m_index = index;
-		}
+		JFrame f = new JFrame();
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JPanel contentPane = new JPanel();
+		f.setContentPane(contentPane);
 
 
-		public int getIndex() {
-			return m_index;
-		}
+		JLabel lbl = new JLabel("Test Label");
+		DropSelectionV2 drop = new DropSelectionV2(f, lbl, "Test", "List", "Stuff", "Longer Test");
+		drop.addDropListener(e -> {
+			Log.printDialog(e.getSource().toString() + " at index " + e.getIndex());
+		});
+		drop.setVisible(false);
+		lbl.addMouseListener(new AbsMouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					Log.debug(this, "Right Click");
+					drop.setVisible(true);
+				}
+			}
+		});
 
+		f.add(lbl);
 
-		public Object getSource() {
-			return m_source;
-		}
+		f.pack();
+		f.setBounds(200, 200, 500, 500);
+		f.setVisible(true);
 	}
 
-	public interface DropListener {
-		public void dropSelected(DropEvent e);
+	private Component m_parent;
+	private Container m_container;
+	private Object[] m_items;
+	private DropSelectionFrame m_frame;
+
+	public DropSelectionV2(Container container, Component parent, Object... items) {
+		m_container = container;
+		m_parent = parent;
+		m_items = items;
+		createFrame();
+	}
+
+
+	/**
+	 * Adds {@code listener} for DropEvent triggers.
+	 * 
+	 * @param listener
+	 */
+	public void addDropListener(DropListener listener) {
+		m_frame.addDropListener(listener);
+	}
+
+
+	/**
+	 * Returns {@code true} if the listener is contained in the DropListener list.
+	 * 
+	 * @param listener
+	 */
+	public void containsDropListener(DropListener listener) {
+		m_frame.containsDropListener(listener);
+	}
+
+
+	/**
+	 * Removes {@code listener} for DropEvent triggers.
+	 * 
+	 * @param listener
+	 */
+	public void removeDropListener(DropListener listener) {
+		m_frame.removeDropListener(listener);
+	}
+
+
+	/**
+	 * Replaces the items currently in the DropSelection.
+	 * 
+	 * @param items Items which will be displayed in the {@link DropSelection}. They
+	 *              are displayed as a {@code String}, as is returned by
+	 *              {@code Object.toString()}.
+	 */
+	public void setItems(Object... items) {
+		m_items = items;
+		createFrame();
+	}
+
+
+	/**
+	 * Manually set DropSelection visibility.
+	 * 
+	 * @param visible
+	 */
+	public void setVisible(boolean visible) {
+		m_frame.setVisible(visible);
+		m_frame.requestFocus();
+	}
+
+
+	private void createFrame() {
+		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
 	}
 }

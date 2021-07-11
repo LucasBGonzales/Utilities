@@ -196,7 +196,6 @@ public class DropSelection {
 	private ComponentAdapter m_componentAdapter;
 	private int m_selectedIndex;
 	private int m_listLimit;
-	private boolean m_hide_temporary;
 
 
 	// Window Variables
