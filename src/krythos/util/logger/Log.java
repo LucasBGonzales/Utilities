@@ -8,8 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.JOptionPane;
 
-public class Log {
-
+public class Log {	
 	public static final int LEVEL_DISABLED = 0;
 	public static final int LEVEL_ERROR = 1;
 	public static final int LEVEL_WARNING = 2;
@@ -20,7 +19,7 @@ public class Log {
 	private static File m_outputFile = null;
 	private static String m_outputString = "";
 	private static boolean m_validOutput = false;
-
+	
 
 	public static void debug(Object source, String message) {
 		message = "[DEBUG] [" + source.toString().trim() + "] " + message.trim();

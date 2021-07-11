@@ -1,4 +1,4 @@
-package kyrthos.util.test_runners;
+package krythos.util.test_runners;
 
 import java.awt.Color;
 
