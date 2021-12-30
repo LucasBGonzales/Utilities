@@ -294,4 +294,9 @@ public class DropSelectionV2 {
 	private void createFrame() {
 		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
 	}
+	
+	
+	public void setLocation(int x, int y) {
+		m_frame.setLocation(x,y);
+	}
 }

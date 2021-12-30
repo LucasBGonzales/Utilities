@@ -5,36 +5,112 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
+import javax.swing.filechooser.FileFilter;
 
 public class Dialogs {
 
 	/**
-	 * Shows an InputAreaDialog box that allows the user to type a response into a
+	 * Shows an InputAreaDialog box that allows the user to type a
+	 * response into a
 	 * scroll-able JTextArea.
 	 * 
 	 * @param parent       The Frame this InputAreaDialog will be tied to.
 	 * @param messsage     The message to display with this Dialog.
-	 * @param initialValue The value to place into the JTextArea when the dialog
+	 * @param initialValue The value to place into the JTextArea when the
+	 *                     dialog
 	 *                     opens.
-	 * @param modal        If true, the window will be modal and thus prevent
-	 *                     interaction with the parent frame. Else, it will be
-	 *                     modeless and allow interaction with the parent frame.
+	 * @param modal        If true, the window will be modal and thus
+	 *                     prevent
+	 *                     interaction with the parent frame. Else, it
+	 *                     will be
+	 *                     modeless and allow interaction with the parent
+	 *                     frame.
 	 * @return {@code String} of the user's response.
 	 */
 	public static String showInputAreaDialog(Frame parent, String message, String initialValue) {
 		return (new InputAreaDialog(parent, message, initialValue)).showDialog();
 	}
-	
-	public static void main(String[] args) {
-		showInputAreaDialog(null, "Test","");
+
+
+	/**
+	 * This function constructs and displays a JFileChooser dialog to the
+	 * user based on the given parameters. This function only allows the
+	 * choice of files.
+	 * 
+	 * @param multiple_files Whether to retrieve one file or multiple
+	 *                       files from the user.
+	 * @param filter         FileFilter for filtering the set of files
+	 *                       shown to the user.
+	 * @param current_dir    First directory the FileChooser shows to the
+	 *                       user.
+	 * @return {@code File[]} of user's choices, or {@code null} if
+	 *         chooser was canceled.
+	 */
+	public static File[] fileChooser(boolean multiple_files, FileFilter filter, File current_dir) {
+		JFileChooser fileDialog = new JFileChooser();
+		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileDialog.setFileFilter(filter);
+		fileDialog.setMultiSelectionEnabled(multiple_files);
+		fileDialog.setCurrentDirectory(current_dir);
+		int returnVal = fileDialog.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			if (multiple_files)
+				return fileDialog.getSelectedFiles();
+			else
+				return new File[] { fileDialog.getSelectedFile() };
+		}
+		return null;
+	}
+
+
+	/**
+	 * This function constructs and displays a JFileChooser dialog to the
+	 * user based on the given parameters. This function only allows the
+	 * choice of folders.
+	 * 
+	 * @param multiple_folders Whether to retrieve one file or multiple
+	 *                         files from the user.
+	 * @param current_dir      First directory the FileChooser shows to
+	 *                         theuser.
+	 * @return {@code File[]} of user's choices, or {@code null} if
+	 *         chooser was canceled.
+	 */
+	public static File[] folderChooser(boolean multiple_folders, File current_dir) {
+		JFileChooser fileDialog = new JFileChooser();
+		fileDialog.setAcceptAllFileFilterUsed(false);
+		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileDialog.setFileFilter(new FileFilter() {
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory();
+			}
+
+
+			@Override
+			public String getDescription() {
+				return "Folders";
+			}
+		});
+		fileDialog.setMultiSelectionEnabled(multiple_folders);
+		fileDialog.setCurrentDirectory(current_dir);
+		int returnVal = fileDialog.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			if (multiple_folders)
+				return fileDialog.getSelectedFiles();
+			else
+				return new File[] { fileDialog.getSelectedFile() };
+		}
+		return null;
 	}
 
 
@@ -128,7 +204,6 @@ public class Dialogs {
 			springLayout.putConstraint(SpringLayout.SOUTH, btn, 0, SpringLayout.SOUTH, springPane);
 
 
-			
 			this.setMinimumSize(new Dimension(200, 200));
 			this.setSize(300, 300);
 			this.setLocationRelativeTo(null); // Center window

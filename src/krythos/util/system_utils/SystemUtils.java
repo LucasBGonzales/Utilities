@@ -21,4 +21,8 @@ public class SystemUtils {
 	public static String getUserAppdataRoaming() {
 		return getUserHome() + "\\AppData\\Roaming";
 	}
+	
+	public static String getCWD() {
+		return System.getProperty("user.dir");
+	}
 }

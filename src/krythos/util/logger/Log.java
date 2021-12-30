@@ -22,7 +22,7 @@ public class Log {
 	
 
 	public static void debug(Object source, String message) {
-		message = "[DEBUG] [" + source.toString().trim() + "] " + message.trim();
+		message = "[DEBUG: " + getTimeStamp() + "] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_DEBUG)
 			println(message);
@@ -30,7 +30,7 @@ public class Log {
 
 
 	public static void error(Object source, String message) {
-		message = "[ERROR] [" + source.toString().trim() + "] " + message.trim();
+		message = "[ERROR " + getTimeStamp() + "] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_ERROR)
 			println(message);
@@ -38,18 +38,29 @@ public class Log {
 
 
 	public static void info(Object source, String message) {
-		message = "[INFO] [" + source.toString().trim() + "] " + message.trim();
+		message = "[INFO " + getTimeStamp() + "] [" + source.toString().trim() + "] " + message.trim();
 		addToLog(message);
 		if (m_LogLevel >= LEVEL_INFO)
 			println(message);
 	}
+	
+	
+	public static String getTimeStamp() {
+		return DateTimeFormatter.ofPattern("HH_mm_ss").format(LocalDateTime.now());
+	}
+	
+	
+	public static String getDateStamp() {
+		return DateTimeFormatter.ofPattern("yyMMdd_HH_mm_ss").format(LocalDateTime.now());
+	}
 
 
-	public static void logFile() {
+	public static void saveLogFile() {
+		info("Log", "Exporting Log File...");
 		if (m_validOutput == false)
 			return;
 
-		String name = "log_" + DateTimeFormatter.ofPattern("yyMMdd_HH_mm_ss").format(LocalDateTime.now()) + ".txt";
+		String name = "log_" + getDateStamp() + ".txt";
 		File file = new File(m_outputFile.getAbsolutePath() + "\\" + name);
 
 		try {
@@ -62,19 +73,17 @@ public class Log {
 	}
 
 
-	public static void print(String message) {
-		addToLog(message);
+	public static void print(Object message) {
 		System.out.print(message);
 	}
 
 
-	public static void printDialog(String message) {
+	public static void printDialog(Object message) {
 		JOptionPane.showMessageDialog(null, message);
 	}
 
 
-	public static void println(String message) {
-		addToLog(message);
+	public static void println(Object message) {
 		System.out.println(message);
 	}
 
@@ -99,9 +108,9 @@ public class Log {
 		m_validOutput = (m_outputFile != null);
 		
 		if (m_validOutput)
-			info("Log", "Successfully Set Output Location");
+			info("Log", "Successfully Set Output Location to " + location.getAbsolutePath());
 		else
-			error("Log", "Failed to Set Output Location");
+			error("Log", "Failed to Set Output Location to " + location.getAbsolutePath());
 		return m_validOutput;
 	}
 
@@ -144,6 +153,12 @@ public class Log {
 			error(this, "Failed to set output location for Log file.");
 			e.printStackTrace();
 		}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				Log.saveLogFile();
+			}
+		});
 	}
 
 }
