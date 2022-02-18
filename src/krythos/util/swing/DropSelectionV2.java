@@ -204,7 +204,7 @@ public class DropSelectionV2 {
 		JLabel lbl = new JLabel("Test Label");
 		DropSelectionV2 drop = new DropSelectionV2(f, lbl, "Test", "List", "Stuff", "Longer Test");
 		drop.addDropListener(e -> {
-			Log.printDialog(e.getSource().toString() + " at index " + e.getIndex());
+			Log.showMessageDialog(e.getSource().toString() + " at index " + e.getIndex());
 		});
 		drop.setVisible(false);
 		lbl.addMouseListener(new AbsMouseListener() {

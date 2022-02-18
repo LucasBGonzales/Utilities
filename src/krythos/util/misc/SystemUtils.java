@@ -1,4 +1,4 @@
-package krythos.util.system_utils;
+package krythos.util.misc;
 
 public class SystemUtils {
 
