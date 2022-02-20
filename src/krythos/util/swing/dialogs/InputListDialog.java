@@ -1,6 +1,5 @@
 package krythos.util.swing.dialogs;
 
-import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -20,15 +19,21 @@ public class InputListDialog extends JDialog {
 	private ListSelection[] list_selections;
 
 
-	public InputListDialog(Frame parent, ListSelection[] list_selections) {
-		super(parent, "Input Dialog", true);
+	/**
+	 * 
+	 * @param owner           the {@code Frame} from which the dialog is
+	 *                        displayed
+	 * @param list_selections {@link ListSelection}s representing the data
+	 *                        and choices to present.
+	 */
+	public InputListDialog(Frame owner, ListSelection[] list_selections) {
+		super(owner, "Input Dialog", true);
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 
 		// Close Window returns an empty value.
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// closeOperation();
 				cancel();
 			}
 		});
@@ -78,7 +83,7 @@ public class InputListDialog extends JDialog {
 		pnlButtons.add(Box.createHorizontalGlue());
 		pnlButtons.add(btnOK);
 		pnlButtons.add(btnCancel);
-		
+
 		content_pane.add(pnlButtons);
 
 		// this.setMinimumSize(new Dimension(200, 200));
@@ -126,9 +131,9 @@ public class InputListDialog extends JDialog {
 		private Object[] selection_values;
 
 
-		public ListSelection(Object message, Object[] selectionValues, int initialSelectionValue) {
+		public ListSelection(Object message, Object[] selectionValues, int initialSelectionIndex) {
 			this.setMessage(message);
-			this.setSelectedValue(initialSelectionValue);
+			this.setSelectedValue(initialSelectionIndex);
 			this.setSelectionValues(selectionValues);
 		}
 

@@ -30,14 +30,45 @@ public class Dialogs {
 	 *                     frame.
 	 * @return {@code String} of the user's response.
 	 */
-	public static String showInputAreaDialog(@SuppressWarnings("exports") Frame parent, String message, String initialValue) {
+	public static String showInputAreaDialog(@SuppressWarnings("exports") Frame parent, String message,
+			String initialValue) {
 		return (new InputAreaDialog(parent, message, initialValue)).showDialog();
 	}
-	
-	
+
+
+	/**
+	 * Creates and displays a {@link InputListDialog} with the given owner
+	 * and {@link ListSelection} array.
+	 * 
+	 * @param owner           the {@code Frame} from which the dialog is
+	 *                        displayed
+	 * @param list_selections {@link ListSelection ListSelections}
+	 *                        representing the data
+	 *                        and choices to present.
+	 * @return
+	 */
 	@SuppressWarnings("exports")
-	public static InputListDialog.ListSelection[] showInputListDialog(Frame parent, ListSelection[] list_selections){
-		return (new InputListDialog(parent,list_selections)).showDialog();
+	public static InputListDialog.ListSelection[] showInputListDialog(Frame owner, ListSelection[] list_selections) {
+		return (new InputListDialog(owner, list_selections)).showDialog();
+	}
+
+
+	/**
+	 * Same as {@link #showInputListDialog(Frame,ListSelection[])
+	 * showInputListDialog()}, but accepts a single ListSelection as
+	 * opposed to an array. This function is for an easy single-list use
+	 * implementation.
+	 * 
+	 * @param owner          the {@code Frame} from which the dialog is
+	 *                       displayed
+	 * @param list_selection {@link ListSelection} representing the data
+	 *                       and choices to present.
+	 * @return
+	 */
+	@SuppressWarnings("exports")
+	public static InputListDialog.ListSelection showInputListDialog(Frame owner, ListSelection list_selection) {
+		ListSelection[] t = (new InputListDialog(owner, new ListSelection[] { list_selection })).showDialog();
+		return t != null ? t[0] : null;
 	}
 
 
@@ -55,7 +86,8 @@ public class Dialogs {
 	 * @return {@code File[]} of user's choices, or {@code null} if
 	 *         chooser was canceled.
 	 */
-	public static File[] fileChooser(boolean multiple_files, @SuppressWarnings("exports") FileFilter filter, File current_dir) {
+	public static File[] fileChooser(boolean multiple_files, @SuppressWarnings("exports") FileFilter filter,
+			File current_dir) {
 		JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileDialog.setFileFilter(filter);
