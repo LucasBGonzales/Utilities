@@ -45,7 +45,7 @@ public class Dialogs {
 	 * @param list_selections {@link ListSelection ListSelections}
 	 *                        representing the data
 	 *                        and choices to present.
-	 * @return
+	 * @return {@link ListSelection} array of the user's selections.
 	 */
 	@SuppressWarnings("exports")
 	public static InputListDialog.ListSelection[] showInputListDialog(Frame owner, ListSelection[] list_selections) {
@@ -63,7 +63,7 @@ public class Dialogs {
 	 *                       displayed
 	 * @param list_selection {@link ListSelection} representing the data
 	 *                       and choices to present.
-	 * @return
+	 * @return {@link ListSelection} of the user's selection.
 	 */
 	@SuppressWarnings("exports")
 	public static InputListDialog.ListSelection showInputListDialog(Frame owner, ListSelection list_selection) {

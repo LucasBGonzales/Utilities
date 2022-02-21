@@ -4,6 +4,5 @@ module krythos.utilities {
 	exports krythos.util.abstract_interfaces;
 	exports krythos.util.misc;
 
-
 	requires java.desktop;
 }

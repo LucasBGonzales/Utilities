@@ -61,7 +61,6 @@ public class InputListDialog extends JDialog {
 			cbx.setName(i + "");
 			cbx.addActionListener(
 					e -> list_selections[Integer.valueOf(cbx.getName())].setSelectedValue(cbx.getSelectedIndex()));
-
 			panel.add(cbx);
 
 			// Spacer
@@ -133,8 +132,8 @@ public class InputListDialog extends JDialog {
 
 		public ListSelection(Object message, Object[] selectionValues, int initialSelectionIndex) {
 			this.setMessage(message);
-			this.setSelectedValue(initialSelectionIndex);
 			this.setSelectionValues(selectionValues);
+			this.setSelectedValue(initialSelectionIndex);
 		}
 
 
@@ -164,6 +163,8 @@ public class InputListDialog extends JDialog {
 
 
 		public void setSelectedValue(int value) {
+			if (value < 0 || value > getSelectionValues().length)
+				value = 0;
 			this.selected_value = value;
 		}
 
