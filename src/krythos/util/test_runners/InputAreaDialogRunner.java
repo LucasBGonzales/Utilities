@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import krythos.util.swing.Dialogs;
+import krythos.util.swing.KDialogs;
 
 public class InputAreaDialogRunner {
 
@@ -20,8 +20,8 @@ public class InputAreaDialogRunner {
 
 		frame.setBounds(0, 0, 500, 500);
 		frame.setVisible(true);
-		lbl.setText(Dialogs.showInputAreaDialog(null, "Enter in your test value below, in that big 'ol text box.", "This is where you enter your values."));
-		lbl.setText(Dialogs.showInputAreaDialog(null, "", "Empty Message"));
+		lbl.setText(KDialogs.showInputAreaDialog(null, "Enter in your test value below, in that big 'ol text box.", "This is where you enter your values."));
+		lbl.setText(KDialogs.showInputAreaDialog(null, "", "Empty Message"));
 	}
 
 }

@@ -3,6 +3,7 @@ package krythos.util.swing;
 import java.awt.Frame;
 import java.io.File;
 
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -10,7 +11,7 @@ import krythos.util.swing.dialogs.InputAreaDialog;
 import krythos.util.swing.dialogs.InputListDialog;
 import krythos.util.swing.dialogs.InputListDialog.ListSelection;
 
-public class Dialogs {
+public class KDialogs {
 
 	/**
 	 * Shows an InputAreaDialog box that allows the user to type a
@@ -30,7 +31,7 @@ public class Dialogs {
 	 *                     frame.
 	 * @return {@code String} of the user's response.
 	 */
-	public static String showInputAreaDialog(@SuppressWarnings("exports") Frame parent, String message,
+	public static String showInputAreaDialog(Frame parent, String message,
 			String initialValue) {
 		return (new InputAreaDialog(parent, message, initialValue)).showDialog();
 	}
@@ -86,9 +87,11 @@ public class Dialogs {
 	 * @return {@code File[]} of user's choices, or {@code null} if
 	 *         chooser was canceled.
 	 */
-	public static File[] fileChooser(boolean multiple_files, @SuppressWarnings("exports") FileFilter filter,
+	public static File[] fileChooser(boolean multiple_files, FileFilter filter,
 			File current_dir) {
 		JFileChooser fileDialog = new JFileChooser();
+		Action details = fileDialog.getActionMap().get("viewTypeDetails");
+		details.actionPerformed(null);
 		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileDialog.setFileFilter(filter);
 		fileDialog.setMultiSelectionEnabled(multiple_files);

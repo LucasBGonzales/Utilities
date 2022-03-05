@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import krythos.util.abstract_interfaces.AbsComponentListener;
-import krythos.util.abstract_interfaces.AbsKeyListener;
 import krythos.util.abstract_interfaces.AbsMouseListener;
 import krythos.util.logger.Log;
 
@@ -32,6 +32,7 @@ public class DropSelectionV2 {
 	public class DropEvent {
 		private Object m_source;
 		private int m_index;
+
 
 		public DropEvent(Object source, int index) {
 			m_source = source;
@@ -49,9 +50,11 @@ public class DropSelectionV2 {
 		}
 	}
 
+
 	public interface DropListener {
 		public void itemSelected(DropEvent e);
 	}
+
 
 	@SuppressWarnings("serial")
 	private class DropSelectionFrame extends JWindow {
@@ -61,6 +64,7 @@ public class DropSelectionV2 {
 		private Component m_parent;
 		private Container m_container;
 		private Object[] m_items;
+
 
 		public DropSelectionFrame(Container container, Component parent, Object... items) {
 			m_parent = parent;
@@ -141,10 +145,10 @@ public class DropSelectionV2 {
 			m_parent.addComponentListener(componentListener);
 			m_container.addComponentListener(componentListener);
 
-			m_container.addKeyListener(new AbsKeyListener() {
+			m_container.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
-					if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 						setVisible(false);
 				}
 			});
@@ -192,6 +196,7 @@ public class DropSelectionV2 {
 		}
 	}
 
+
 	public static void main(String... args) {
 		Log.setLevel(Log.LEVEL_DEBUG);
 
@@ -224,10 +229,12 @@ public class DropSelectionV2 {
 		f.setVisible(true);
 	}
 
+
 	private Component m_parent;
 	private Container m_container;
 	private Object[] m_items;
 	private DropSelectionFrame m_frame;
+
 
 	public DropSelectionV2(Container container, Component parent, Object... items) {
 		m_container = container;
@@ -248,7 +255,8 @@ public class DropSelectionV2 {
 
 
 	/**
-	 * Returns {@code true} if the listener is contained in the DropListener list.
+	 * Returns {@code true} if the listener is contained in the
+	 * DropListener list.
 	 * 
 	 * @param listener
 	 */
@@ -270,7 +278,8 @@ public class DropSelectionV2 {
 	/**
 	 * Replaces the items currently in the DropSelection.
 	 * 
-	 * @param items Items which will be displayed in the {@link DropSelection}. They
+	 * @param items Items which will be displayed in the
+	 *              {@link DropSelection}. They
 	 *              are displayed as a {@code String}, as is returned by
 	 *              {@code Object.toString()}.
 	 */
@@ -294,9 +303,9 @@ public class DropSelectionV2 {
 	private void createFrame() {
 		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
 	}
-	
-	
+
+
 	public void setLocation(int x, int y) {
-		m_frame.setLocation(x,y);
+		m_frame.setLocation(x, y);
 	}
 }

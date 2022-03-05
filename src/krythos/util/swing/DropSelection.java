@@ -7,6 +7,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -25,11 +26,11 @@ import javax.swing.JWindow;
 import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 
-import krythos.util.abstract_interfaces.AbsKeyListener;
 import krythos.util.abstract_interfaces.AbsMouseListener;
 
 /**
- * This class will create a drop-down menu of selectable text labels. This
+ * This class will create a drop-down menu of selectable text labels.
+ * This
  * version is designed for use with {@code JInternalFrame}s.
  * 
  * @author Lucas Gonzales "Krythos"
@@ -37,8 +38,10 @@ import krythos.util.abstract_interfaces.AbsMouseListener;
  */
 public class DropSelection {
 	/**
-	 * This event is so that implementing code can easily see when an item has been
-	 * selected, where it was in the list, and what the text of the DropLabel was.
+	 * This event is so that implementing code can easily see when an item
+	 * has been
+	 * selected, where it was in the list, and what the text of the
+	 * DropLabel was.
 	 * 
 	 * @author Lucas Gonzales "Krythos"
 	 *
@@ -80,6 +83,7 @@ public class DropSelection {
 		}
 	}
 
+
 	/**
 	 * Interface to distribute DropEvents.
 	 * 
@@ -90,8 +94,10 @@ public class DropSelection {
 		public void itemSelected(DropEvent e);
 	}
 
+
 	/**
-	 * DropLabels are JLabels but with additional functionality to make them operate
+	 * DropLabels are JLabels but with additional functionality to make
+	 * them operate
 	 * easily as a navigable list of selectable items.
 	 * 
 	 * @author Lucas Gonzales "Krythos"
@@ -112,7 +118,8 @@ public class DropSelection {
 
 
 		/**
-		 * If the {@code Color} is null, the label is made transparent. Else, it is made
+		 * If the {@code Color} is null, the label is made transparent. Else,
+		 * it is made
 		 * opaque and {@code super.setBackground(Color)} is called.
 		 */
 		@Override
@@ -150,6 +157,7 @@ public class DropSelection {
 		}
 	}
 
+
 	/**
 	 * Example of working drop selection
 	 * 
@@ -182,6 +190,7 @@ public class DropSelection {
 		ds.setVisible(true);
 	}
 
+
 	private List<DropListener> m_dropListeners;
 	private List<DropLabel> m_lstLabels;
 	private String[] m_dictionary;
@@ -206,7 +215,8 @@ public class DropSelection {
 
 
 	/**
-	 * Creates a selection menu for a {@code JTextComponent}. Must define the
+	 * Creates a selection menu for a {@code JTextComponent}. Must define
+	 * the
 	 * {@code Container} upon which to draw the {@code DropSelection}.
 	 * 
 	 * @param txtComponent The {@code JTextComponent} to create the
@@ -220,8 +230,10 @@ public class DropSelection {
 
 
 	/**
-	 * Creates a selection menu for a {@code JTextComponent}. Must define the
-	 * {@code Container} upon which to draw the {@code DropSelection} and a list if
+	 * Creates a selection menu for a {@code JTextComponent}. Must define
+	 * the
+	 * {@code Container} upon which to draw the {@code DropSelection} and
+	 * a list if
 	 * items to draw.
 	 * 
 	 * @param txtComponent The {@code JTextComponent} to create the
@@ -270,7 +282,8 @@ public class DropSelection {
 
 
 	/**
-	 * Returns whether the list is currently visible. Will also return false if the
+	 * Returns whether the list is currently visible. Will also return
+	 * false if the
 	 * list has a size less than 0.
 	 * 
 	 * @return
@@ -303,7 +316,8 @@ public class DropSelection {
 
 
 	/**
-	 * Sets the dictionary of {@code Strings} to select from for the drop selection
+	 * Sets the dictionary of {@code Strings} to select from for the drop
+	 * selection
 	 * list.
 	 * 
 	 * @param list
@@ -372,30 +386,31 @@ public class DropSelection {
 	 * Defines the various listeners used by DropSelection
 	 */
 	private void defineListeners() {
-		m_keyListener = new AbsKeyListener() {
+		m_keyListener = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 
 				if (e.getSource().equals(m_txtComponent)) {
-						if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_UP) {
-							if (m_selectedIndex > 0)
-								setSelectedIndex(m_selectedIndex - 1);
+					if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_UP) {
+						if (m_selectedIndex > 0)
+							setSelectedIndex(m_selectedIndex - 1);
 
-						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_DOWN) {
-							if (m_selectedIndex < m_lstLabels.size() - 1)
-								setSelectedIndex(m_selectedIndex + 1);
+					} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_DOWN) {
+						if (m_selectedIndex < m_lstLabels.size() - 1)
+							setSelectedIndex(m_selectedIndex + 1);
 
-						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_ENTER) {
-							if (m_lstLabels.size() > 0 && isVisible())
-								itemSelected(m_lstLabels.get(m_selectedIndex));
+					} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_ENTER) {
+						if (m_lstLabels.size() > 0 && isVisible())
+							itemSelected(m_lstLabels.get(m_selectedIndex));
 
-						} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU || e.getKeyCode() == KeyEvent.VK_ESCAPE)
-							setVisible(!isVisible());
-						else {
-							setVisible(true);
-							calcDisplayList();
-							updateUI();
-						}
+					} else if (m_lstLabels != null && e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU
+							|| e.getKeyCode() == KeyEvent.VK_ESCAPE)
+						setVisible(!isVisible());
+					else {
+						setVisible(true);
+						calcDisplayList();
+						updateUI();
+					}
 				}
 			}
 
@@ -460,7 +475,8 @@ public class DropSelection {
 
 
 	/**
-	 * Sets the selected index, updates the UI to reflect this, and sends a
+	 * Sets the selected index, updates the UI to reflect this, and sends
+	 * a
 	 * DropEvent.
 	 * 
 	 * @param index
@@ -486,8 +502,10 @@ public class DropSelection {
 
 
 	/**
-	 * Redraws the entire list based on current parameters. These parameters include
-	 * the location of {@code m_txtComponent}, opacity and visibility of the window,
+	 * Redraws the entire list based on current parameters. These
+	 * parameters include
+	 * the location of {@code m_txtComponent}, opacity and visibility of
+	 * the window,
 	 * and the borders of the {@code DropLabels}.
 	 */
 	private void updateUI() {
@@ -544,7 +562,8 @@ public class DropSelection {
 
 
 	/**
-	 * When an item is selected, the text of the label goes into the JTextComponent
+	 * When an item is selected, the text of the label goes into the
+	 * JTextComponent
 	 * and the list is hidden.
 	 * 
 	 * @param label
