@@ -14,10 +14,9 @@ import javax.swing.SwingConstants;
 public class SimpleProgressBar extends JDialog {
 	private JProgressBar jb;
 
-
 	/**
-	 * Creates a {@link SimpleProgressBar} with the specified minimum and
-	 * maximum values, and a default Horizontal orientation.
+	 * Creates a {@link SimpleProgressBar} with the specified minimum and maximum
+	 * values, and a default Horizontal orientation.
 	 * 
 	 * @param min Minimum value.
 	 * @param max Maximum value.
@@ -26,11 +25,9 @@ public class SimpleProgressBar extends JDialog {
 		this(parent, JProgressBar.HORIZONTAL, min, max);
 	}
 
-
 	/**
-	 * Creates a {@link SimpleProgressBar} with the specified minimum,
-	 * maximum, and orientation values. Orientation value determined from
-	 * {@link SwingConstants}.
+	 * Creates a {@link SimpleProgressBar} with the specified minimum, maximum, and
+	 * orientation values. Orientation value determined from {@link SwingConstants}.
 	 * 
 	 * @param orient Orientation of the JProgressBar
 	 * @param min    Minimum Value.
@@ -57,28 +54,24 @@ public class SimpleProgressBar extends JDialog {
 		SwingMisc.centerWindow(this);
 	}
 
-
 	public void increment() {
 		increment(1);
 	}
 
-
 	public void increment(int amount) {
-		this.setValue(jb.getValue() + amount);
+		this.setValue(bar().getValue() + amount);
 	}
-
 
 	public void setValue(int value) {
 		this.bar().setValue(value);
 	}
 
-
 	public JProgressBar bar() {
 		return jb;
 	}
 
-
-	public String statusString() {
+	@Override
+	public String toString() {
 		String ret = "";
 		ret += "Minimum: " + bar().getMinimum() + "\n";
 		ret += "Maximum: " + bar().getMaximum() + "\n";
@@ -87,7 +80,6 @@ public class SimpleProgressBar extends JDialog {
 		return ret;
 	}
 
-
 	public static void main(String[] args) throws InterruptedException {
 		SimpleProgressBar m = new SimpleProgressBar(null, 0, 100);
 		m.setTitle("Example Progress Bar");
@@ -95,7 +87,7 @@ public class SimpleProgressBar extends JDialog {
 		m.setVisible(true);
 		while (m.bar().getValue() < m.bar().getMaximum()) {
 			m.increment();
-			Thread.sleep(1000 / m.bar().getMaximum());
+			Thread.sleep(2000 / m.bar().getMaximum());
 		}
 	}
 }
