@@ -64,7 +64,7 @@ public class KDialogs {
 	 *                       displayed
 	 * @param list_selection {@link ListSelection} representing the data
 	 *                       and choices to present.
-	 * @return {@link ListSelection} of the user's selection.
+	 * @return {@link ListSelection} of the user's selection, or <code>null</code> if selection was cancelled.
 	 */
 	@SuppressWarnings("exports")
 	public static InputListDialog.ListSelection showInputListDialog(Frame owner, ListSelection list_selection) {
