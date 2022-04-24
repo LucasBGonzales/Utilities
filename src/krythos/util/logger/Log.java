@@ -135,7 +135,7 @@ public class Log {
 	 * will be the {@link Frame}. Null may be passed to use a default
 	 * {@link Frame}. Any {@link Object}s beyond 3 will be ignored.
 	 * 
-	 * @param args {@link Object} array of options. [Source, Message, OwnerFrame]
+	 * @param args {@link Object} array of options. ([Source], Message, [OwnerFrame])
 	 */
 	public static void debug(Object... args) {
 		if (args.length == 1)
@@ -174,7 +174,7 @@ public class Log {
 	 * will be the {@link Frame}. Null may be passed to use a default
 	 * {@link Frame}. Any {@link Object}s beyond 3 will be ignored.
 	 * 
-	 * @param args {@link Object} array of options. [Source, Message, OwnerFrame]
+	 * @param args {@link Object} array of options. ([Source], Message, [OwnerFrame])
 	 */
 	public static void error(Object... args) {
 		if (args.length == 1)
@@ -241,7 +241,7 @@ public class Log {
 	 * will be the {@link Frame}. Null may be passed to use a default
 	 * {@link Frame}. Any {@link Object}s beyond 3 will be ignored.
 	 * 
-	 * @param args {@link Object} array of options. [Source, Message, OwnerFrame]
+	 * @param args {@link Object} array of options. ([Source], Message, [OwnerFrame])
 	 */
 	public static void info(Object... args) {
 		if (args.length == 1)
@@ -364,7 +364,7 @@ public class Log {
 	 * will be the {@link Frame}. Null may be passed to use a default
 	 * {@link Frame}. Any {@link Object}s beyond 3 will be ignored.
 	 * 
-	 * @param args {@link Object} array of options. [Source, Message, OwnerFrame]
+	 * @param args {@link Object} array of options. ([Source], Message, [OwnerFrame])
 	 */
 	public static void warn(Object... args) {
 		if (args.length == 1)
