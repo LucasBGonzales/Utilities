@@ -52,8 +52,8 @@ public class Log {
 	 *         the log-call.
 	 */
 	private static String autoSource() {
-		return (new Throwable()).getStackTrace()[3].getClassName() + "."
-				+ (new Throwable()).getStackTrace()[3].getLineNumber();
+		return (new Throwable()).getStackTrace()[4].getClassName() + "."
+				+ (new Throwable()).getStackTrace()[4].getLineNumber();
 	}
 
 
