@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.IllegalComponentStateException;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
@@ -12,6 +13,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -29,12 +31,12 @@ import krythos.util.abstract_interfaces.AbsMouseListener;
 import krythos.util.logger.Log;
 
 public class KContextMenu {
-	public class DropEvent {
+	public class ContextEvent {
 		private int m_index;
 		private Object m_source;
 
 
-		public DropEvent(Object source, int index) {
+		public ContextEvent(Object source, int index) {
 			m_source = source;
 			m_index = index;
 		}
@@ -51,46 +53,46 @@ public class KContextMenu {
 	}
 
 
-	public interface DropListener {
-		public void itemSelected(DropEvent e);
+	public interface ContextListener {
+		public void itemSelected(ContextEvent e);
 	}
 
 
 	@SuppressWarnings("serial")
-	private class DropSelectionFrame extends JWindow {
+	private class ContextMenuFrame extends JWindow {
 		private final Border BORDER_EMPTY = BorderFactory.createEmptyBorder(1, 2, 1, 2);
-		private final Border BORDER_SELECTED = BorderFactory.createLineBorder(Color.DARK_GRAY, 1);
+		private final Border BORDER_SELECTED = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
 		private Container m_container;
 		private Object[] m_items;
-		private ArrayList<DropListener> m_listeners;
+		private ArrayList<ContextListener> m_listeners;
 		private Component m_parent;
 
 
-		public DropSelectionFrame(Container container, Component parent, Object... items) {
+		public ContextMenuFrame(Container container, Component parent, Object... items) {
 			m_parent = parent;
 			m_container = container;
 			m_items = items;
-			m_listeners = new ArrayList<DropListener>();
+			m_listeners = new ArrayList<ContextListener>();
 			createGUI();
 			this.setVisible(false);
 		}
 
 
-		public void addDropListener(DropListener listener) {
-			if (!containsDropListener(listener))
+		public void addContextListener(ContextListener listener) {
+			if (!containsContextListener(listener))
 				m_listeners.add(listener);
 		}
 
 
-		public boolean containsDropListener(DropListener listener) {
-			for (DropListener l : m_listeners)
+		public boolean containsContextListener(ContextListener listener) {
+			for (ContextListener l : m_listeners)
 				if (l.equals(listener))
 					return true;
 			return false;
 		}
 
 
-		public boolean removeDropListener(DropListener listener) {
+		public boolean removeContextListener(ContextListener listener) {
 			return m_listeners.remove(listener);
 		}
 
@@ -153,7 +155,6 @@ public class KContextMenu {
 				}
 			});
 			this.addFocusListener(new FocusListener() {
-
 				@Override
 				public void focusGained(FocusEvent e) {
 					setVisible(true);
@@ -164,7 +165,6 @@ public class KContextMenu {
 				public void focusLost(FocusEvent e) {
 					setVisible(false);
 				}
-
 			});
 
 			// Set Initial Location
@@ -173,20 +173,31 @@ public class KContextMenu {
 			this.pack();
 		}
 
+		@Override
+		public void setVisible(boolean b) {
+			if(b)
+				updateLocation();
+			super.setVisible(b);
+		}
 
 		private void itemClicked(int index) {
-			// TODO DropEvents
+			// TODO ContextEvents
 			Log.debug(this, "Item Clicked:" + m_items[index].toString());
-			for (DropListener dl : m_listeners)
-				dl.itemSelected(new DropEvent(m_items[index], index));
+			for (ContextListener dl : m_listeners)
+				dl.itemSelected(new ContextEvent(m_items[index], index));
 			this.setVisible(false);
 		}
 
 
 		private void updateLocation() {
 			try {
-				Point p = m_parent.getLocationOnScreen();
-				p.y = p.y + m_parent.getHeight();
+				/**
+				 * OLD method, placed just under component.
+				 * Point p = m_parent.getLocationOnScreen(); 
+				 * p.y = p.y + m_parent.getHeight();
+				 */
+				Point p = MouseInfo.getPointerInfo().getLocation();
+				Log.println(p.toString());
 				setLocation(p.x, p.y);
 			} catch (IllegalComponentStateException ex) {
 				// Do Nothing
@@ -198,11 +209,11 @@ public class KContextMenu {
 
 
 	private Container m_container;
-
-
-	private DropSelectionFrame m_frame;
+	private ContextMenuFrame m_frame;
 	private Object[] m_items;
 	private Component m_parent;
+
+
 	public static void main(String... args) {
 		Log.setLevel(Log.LEVEL_DEBUG);
 
@@ -213,8 +224,8 @@ public class KContextMenu {
 
 
 		JLabel lbl = new JLabel("Test Label");
-		KContextMenu drop = new KContextMenu(f, lbl, "Test", "List", "Stuff", "Longer Test");
-		drop.addDropListener(e -> {
+		KContextMenu menu = new KContextMenu(f, lbl, "Test", "List", "Stuff", "Longer Test");
+		menu.addContextListener(e -> {
 			Log.showMessageDialog(e.getSource().toString() + " at index " + e.getIndex());
 		});
 
@@ -234,10 +245,8 @@ public class KContextMenu {
 		parent.addMouseListener(new AbsMouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					Log.debug(this, "Right Click");
+				if (SwingUtilities.isRightMouseButton(e))
 					setVisible(true);
-				}
 			}
 		});
 		createFrame();
@@ -246,42 +255,41 @@ public class KContextMenu {
 
 
 	/**
-	 * Adds {@code listener} for DropEvent triggers.
+	 * Adds {@code listener} for ContextEvent triggers.
 	 * 
 	 * @param listener
 	 */
-	public void addDropListener(DropListener listener) {
-		m_frame.addDropListener(listener);
+	public void addContextListener(ContextListener listener) {
+		m_frame.addContextListener(listener);
 	}
 
 
 	/**
-	 * Returns {@code true} if the listener is contained in the
-	 * DropListener list.
+	 * Returns {@code true} if the listener is contained in the ContextListener
+	 * list.
 	 * 
 	 * @param listener
 	 */
-	public void containsDropListener(DropListener listener) {
-		m_frame.containsDropListener(listener);
+	public void containsContextListener(ContextListener listener) {
+		m_frame.containsContextListener(listener);
 	}
 
 
 	/**
-	 * Removes {@code listener} for DropEvent triggers.
+	 * Removes {@code listener} for ContextEvent triggers.
 	 * 
 	 * @param listener
 	 */
-	public void removeDropListener(DropListener listener) {
-		m_frame.removeDropListener(listener);
+	public void removeContextListener(ContextListener listener) {
+		m_frame.removeContextListener(listener);
 	}
 
 
 	/**
-	 * Replaces the items currently in the DropSelection.
+	 * Replaces the items currently in the {@link KContextMenu}.
 	 * 
-	 * @param items Items which will be displayed in the
-	 *              {@link DropSelection}. They
-	 *              are displayed as a {@code String}, as is returned by
+	 * @param items Items which will be displayed in the context menu. They are
+	 *              displayed as a {@code String}, as is returned by
 	 *              {@code Object.toString()}.
 	 */
 	public void setItems(Object... items) {
@@ -296,7 +304,7 @@ public class KContextMenu {
 
 
 	/**
-	 * Manually set DropSelection visibility.
+	 * Manually set KContextMenu visibility.
 	 * 
 	 * @param visible
 	 */
@@ -307,6 +315,6 @@ public class KContextMenu {
 
 
 	private void createFrame() {
-		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
+		m_frame = new ContextMenuFrame(m_container, m_parent, m_items);
 	}
 }
