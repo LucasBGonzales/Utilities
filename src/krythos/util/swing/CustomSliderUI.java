@@ -28,6 +28,7 @@ public class CustomSliderUI extends BasicSliderUI {
 	private final BasicStroke stroke = new BasicStroke(2f);
 	private Color rangeColor = Color.BLUE;
 	private Color thumbColor = Color.WHITE;
+	private Color thumbBorderColor = Color.BLUE;
 	private Color trackColor = Color.GRAY;
 	private Dimension thumbSize = new Dimension(12, 12);
 	private int trackHeight = 2;
@@ -47,6 +48,12 @@ public class CustomSliderUI extends BasicSliderUI {
 
 	public void setThumbColor(Color c) {
 		this.thumbColor = c;
+		slider.repaint();
+	}
+
+
+	public void setThumbBorderColor(Color c) {
+		this.thumbBorderColor = c;
 		slider.repaint();
 	}
 
@@ -193,7 +200,7 @@ public class CustomSliderUI extends BasicSliderUI {
 		g2d.setColor(thumbColor);
 		g2d.fill(thumbShape);
 
-		g2d.setColor(Color.BLUE);
+		g2d.setColor(thumbBorderColor);
 		g2d.draw(thumbShape);
 		g2d.dispose();
 	}

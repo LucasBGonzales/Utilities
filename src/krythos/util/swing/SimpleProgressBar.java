@@ -9,10 +9,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import krythos.util.logger.Log;
 
 @SuppressWarnings("serial")
 public class SimpleProgressBar extends JDialog {
 	private JProgressBar jb;
+
 
 	/**
 	 * Creates a {@link SimpleProgressBar} with the specified minimum and maximum
@@ -24,6 +28,7 @@ public class SimpleProgressBar extends JDialog {
 	public SimpleProgressBar(Frame parent, int min, int max) {
 		this(parent, JProgressBar.HORIZONTAL, min, max);
 	}
+
 
 	/**
 	 * Creates a {@link SimpleProgressBar} with the specified minimum, maximum, and
@@ -54,21 +59,26 @@ public class SimpleProgressBar extends JDialog {
 		SwingMisc.centerWindow(this);
 	}
 
+
 	public void increment() {
 		increment(1);
 	}
+
 
 	public void increment(int amount) {
 		this.setValue(bar().getValue() + amount);
 	}
 
+
 	public void setValue(int value) {
 		this.bar().setValue(value);
 	}
 
+
 	public JProgressBar bar() {
 		return jb;
 	}
+
 
 	@Override
 	public String toString() {
@@ -80,14 +90,26 @@ public class SimpleProgressBar extends JDialog {
 		return ret;
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+
+	public static void main(String[] args) {
 		SimpleProgressBar m = new SimpleProgressBar(null, 0, 100);
 		m.setTitle("Example Progress Bar");
 		m.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		m.setVisible(true);
-		while (m.bar().getValue() < m.bar().getMaximum()) {
-			m.increment();
-			Thread.sleep(2000 / m.bar().getMaximum());
-		}
+		m.bar().setMaximum(10);
+		final Runnable r = new Runnable() {
+			public void run() {
+				long time = System.currentTimeMillis();
+				double value = 0.0;
+				while (m.bar().getValue() < m.bar().getMaximum()) {
+					long newtime = System.currentTimeMillis();
+					double dt = (double) (newtime - time);
+					time = newtime;
+					value += dt/1000.0;
+					m.setValue((int) value);
+				}
+			}
+		};
+		new Thread(r).start();
 	}
 }

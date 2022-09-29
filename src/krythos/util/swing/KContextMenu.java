@@ -28,10 +28,10 @@ import krythos.util.abstract_interfaces.AbsComponentListener;
 import krythos.util.abstract_interfaces.AbsMouseListener;
 import krythos.util.logger.Log;
 
-public class DropSelectionV2 {
+public class KContextMenu {
 	public class DropEvent {
-		private Object m_source;
 		private int m_index;
+		private Object m_source;
 
 
 		public DropEvent(Object source, int index) {
@@ -60,10 +60,10 @@ public class DropSelectionV2 {
 	private class DropSelectionFrame extends JWindow {
 		private final Border BORDER_EMPTY = BorderFactory.createEmptyBorder(1, 2, 1, 2);
 		private final Border BORDER_SELECTED = BorderFactory.createLineBorder(Color.DARK_GRAY, 1);
-		private ArrayList<DropListener> m_listeners;
-		private Component m_parent;
 		private Container m_container;
 		private Object[] m_items;
+		private ArrayList<DropListener> m_listeners;
+		private Component m_parent;
 
 
 		public DropSelectionFrame(Container container, Component parent, Object... items) {
@@ -197,6 +197,12 @@ public class DropSelectionV2 {
 	}
 
 
+	private Container m_container;
+
+
+	private DropSelectionFrame m_frame;
+	private Object[] m_items;
+	private Component m_parent;
 	public static void main(String... args) {
 		Log.setLevel(Log.LEVEL_DEBUG);
 
@@ -207,40 +213,35 @@ public class DropSelectionV2 {
 
 
 		JLabel lbl = new JLabel("Test Label");
-		DropSelectionV2 drop = new DropSelectionV2(f, lbl, "Test", "List", "Stuff", "Longer Test");
+		KContextMenu drop = new KContextMenu(f, lbl, "Test", "List", "Stuff", "Longer Test");
 		drop.addDropListener(e -> {
 			Log.showMessageDialog(e.getSource().toString() + " at index " + e.getIndex());
-		});
-		drop.setVisible(false);
-		lbl.addMouseListener(new AbsMouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					Log.debug(this, "Right Click");
-					drop.setVisible(true);
-				}
-			}
 		});
 
 		f.add(lbl);
 
 		f.pack();
-		f.setBounds(200, 200, 500, 500);
+		f.setBounds(200, 200, 300, 200);
+		SwingMisc.centerWindow(f);
 		f.setVisible(true);
 	}
 
 
-	private Component m_parent;
-	private Container m_container;
-	private Object[] m_items;
-	private DropSelectionFrame m_frame;
-
-
-	public DropSelectionV2(Container container, Component parent, Object... items) {
+	public KContextMenu(Container container, Component parent, Object... items) {
 		m_container = container;
 		m_parent = parent;
 		m_items = items;
+		parent.addMouseListener(new AbsMouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					Log.debug(this, "Right Click");
+					setVisible(true);
+				}
+			}
+		});
 		createFrame();
+		setVisible(false);
 	}
 
 
@@ -289,6 +290,11 @@ public class DropSelectionV2 {
 	}
 
 
+	public void setLocation(int x, int y) {
+		m_frame.setLocation(x, y);
+	}
+
+
 	/**
 	 * Manually set DropSelection visibility.
 	 * 
@@ -302,10 +308,5 @@ public class DropSelectionV2 {
 
 	private void createFrame() {
 		m_frame = new DropSelectionFrame(m_container, m_parent, m_items);
-	}
-
-
-	public void setLocation(int x, int y) {
-		m_frame.setLocation(x, y);
 	}
 }
