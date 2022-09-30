@@ -4,8 +4,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 
-import krythos.util.logger.Log;
-
 public class SwingMisc {
 
 	/**
@@ -22,8 +20,7 @@ public class SwingMisc {
 			device = GraphicsEnvironment.getLocalGraphicsEnvironment()
 					.getScreenDevices()[screen.length > 0 ? screen[0] : 0];
 		} catch (NullPointerException e) {
-			Log.error("Screen was null. Couldn't center window;\n" + e.getMessage());
-			return false;
+			throw new RuntimeException("Screen was null. Couldn't center window;\n" + e.getMessage());
 		}
 		int topLeftX, topLeftY, screenX, screenY, windowPosX, windowPosY;
 

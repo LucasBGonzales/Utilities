@@ -9,9 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import krythos.util.logger.Log;
 
 @SuppressWarnings("serial")
 public class SimpleProgressBar extends JDialog {

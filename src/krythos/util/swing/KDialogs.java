@@ -48,7 +48,6 @@ public class KDialogs {
 	 *                        and choices to present.
 	 * @return {@link ListSelection} array of the user's selections.
 	 */
-	@SuppressWarnings("exports")
 	public static InputListDialog.ListSelection[] showInputListDialog(Frame owner, ListSelection[] list_selections) {
 		return (new InputListDialog(owner, list_selections)).showDialog();
 	}
@@ -66,7 +65,6 @@ public class KDialogs {
 	 *                       and choices to present.
 	 * @return {@link ListSelection} of the user's selection, or <code>null</code> if selection was cancelled.
 	 */
-	@SuppressWarnings("exports")
 	public static InputListDialog.ListSelection showInputListDialog(Frame owner, ListSelection list_selection) {
 		ListSelection[] t = (new InputListDialog(owner, new ListSelection[] { list_selection })).showDialog();
 		return t != null ? t[0] : null;
