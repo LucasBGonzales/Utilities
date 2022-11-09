@@ -21,8 +21,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI;
 
-import krythos.util.logger.Log;
-
 public class CustomSliderUI extends BasicSliderUI {
 
 	private final BasicStroke stroke = new BasicStroke(2f);
@@ -184,9 +182,8 @@ public class CustomSliderUI extends BasicSliderUI {
 
 
 	/**
-	 * Overrides superclass method to do nothing. Thumb painting is
-	 * handled
-	 * within the <code>paint()</code> method.
+	 * Overrides superclass method to do nothing. Thumb painting is handled within
+	 * the <code>paint()</code> method.
 	 */
 	@Override
 	public void paintThumb(Graphics g) {
@@ -207,9 +204,9 @@ public class CustomSliderUI extends BasicSliderUI {
 
 
 	/**
-	 * Listener to handle model change events. This calculates the thumb
-	 * locations and repaints the slider if the value change is not caused
-	 * by dragging a thumb.
+	 * Listener to handle model change events. This calculates the thumb locations
+	 * and repaints the slider if the value change is not caused by dragging a
+	 * thumb.
 	 */
 	public class ChangeHandler implements ChangeListener {
 		@Override
@@ -221,7 +218,6 @@ public class CustomSliderUI extends BasicSliderUI {
 
 
 	public static void main(String[] args) {
-		Log.setLevel(Log.LEVEL_DEBUG);
 		JFrame frame = new JFrame();
 		JSlider slider = new JSlider(0, 255);
 		slider.setPaintTicks(true);
@@ -257,7 +253,7 @@ public class CustomSliderUI extends BasicSliderUI {
 				return;
 			}
 			currentMouseX -= thumbRect.width / 2; // Because we want the mouse location correspond to middle of the
-													 // "thumb", not left side of it.
+													// "thumb", not left side of it.
 			moveUpperThumb();
 		}
 
@@ -337,8 +333,8 @@ public class CustomSliderUI extends BasicSliderUI {
 
 
 		/**
-		 * Moves the location of the upper thumb, and sets its corresponding
-		 * value in the slider.
+		 * Moves the location of the upper thumb, and sets its corresponding value in
+		 * the slider.
 		 */
 		public void moveUpperThumb() {
 			int thumbMiddle = 0;
