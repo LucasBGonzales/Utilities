@@ -14,20 +14,23 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 public class Log {
+	private static Log mMe;
+
+	public static final int DISABLED = 0;
+	public static final int ERROR = 1;
+	public static final int INFO = 3;
+	public static final int WARNING = 2;
+	public static final int DEBUG = 4;
+	
 	// Determines whether logs are written to file.
 	private boolean mfWriteLogs = false;
-	// Determines which logs are printed to console.
-	private int mLogLevel = LEVEL_DISABLED;
 
-	public static final int LEVEL_DISABLED = 0;
-	public static final int LEVEL_ERROR = 1;
-	public static final int LEVEL_WARNING = 2;
-	public static final int LEVEL_INFO = 3;
-	public static final int LEVEL_DEBUG = 4;
+	// Determines which logs are printed to console.
+	private int mLogLevel = DISABLED;
 
 
 	public Log() {
-		this(true);
+		this(false);
 	}
 
 
@@ -37,7 +40,7 @@ public class Log {
 	 * @param mfWriteLogs
 	 */
 	public Log(boolean pWriteLogs) {
-		this(LEVEL_INFO, pWriteLogs);
+		this(INFO, pWriteLogs);
 	}
 
 
@@ -51,16 +54,21 @@ public class Log {
 		this.mLogLevel = pLevel;
 		this.mfWriteLogs = pWriteLogs;
 		clearLogFolder();
+		mMe = this;
 	}
 
 
 	/**
-	 * Tries to determine the class and line number within that class where this log
-	 * was made. Assumes the stack is 3 calls deep. This should be accurate, I'm
-	 * going to test this for a while to see if there are any unforeseen problems. I
+	 * Tries to determine the class and line number within that class
+	 * where this log
+	 * was made. Assumes the stack is 3 calls deep. This should be
+	 * accurate, I'm
+	 * going to test this for a while to see if there are any unforeseen
+	 * problems. I
 	 * may make this an automatic sourcing later.
 	 * 
-	 * @return {@link String} representing the ClassName and LineNumber of the
+	 * @return {@link String} representing the ClassName and LineNumber of
+	 *         the
 	 *         log-call.
 	 */
 	private static String autoSource() {
@@ -90,7 +98,8 @@ public class Log {
 	/**
 	 * Constructs the formatted message from the information provided.
 	 * 
-	 * @param source  Source of the message. If <code>null</code>, then a source
+	 * @param source  Source of the message. If <code>null</code>, then a
+	 *                source
 	 *                will be automatically determined.
 	 * @param message Information to present; description of the message.
 	 * @return {@link String} of the formatted message.
@@ -103,8 +112,59 @@ public class Log {
 
 
 	/**
-	 * Writes (appends) a message to the specified filename, saved to a logs folder
-	 * in the current working directory. If the file doesn't exist, it will be
+	 * @return Formatted {@link String} representing the current date.
+	 *         (yyMMdd)
+	 */
+	public static String getDateStamp() {
+		return DateTimeFormatter.ofPattern("yyMMdd").format(LocalDateTime.now());
+	}
+
+
+	/**
+	 * @return {@link Integer} representing the line number of the code
+	 *         that calls
+	 *         this function.
+	 */
+	public static int getLineNumber() {
+		return (new Throwable()).getStackTrace()[1].getLineNumber();
+
+	}
+
+
+	/**
+	 * @return Formatted {@link String} representing the current time.
+	 *         (HH_mm_ss)
+	 */
+	public static String getTimeStamp() {
+		return DateTimeFormatter.ofPattern("HH_mm_ss").format(LocalDateTime.now());
+	}
+
+
+	/**
+	 * Prints to <code>System.out.print()</code>.
+	 * 
+	 * @param message Message to print.
+	 */
+	public static void print(Object message) {
+		System.out.print(message);
+	}
+
+
+	/**
+	 * Prints to <code>System.out.println()</code>.
+	 * 
+	 * @param message Message to print.
+	 */
+	public static void println(Object message) {
+		System.out.println(message);
+	}
+
+
+	/**
+	 * Writes (appends) a message to the specified filename, saved to a
+	 * logs folder
+	 * in the current working directory. If the file doesn't exist, it
+	 * will be
 	 * created.
 	 * 
 	 * @param filename Name of the file.
@@ -138,13 +198,19 @@ public class Log {
 
 
 	/**
-	 * Variable arguments function. If there is only one {@link Object} passed, then
-	 * that object will be treated as the message, and the source tag will be
-	 * determined automatically. If there are two {@link Object}s passed, the first
+	 * Variable arguments function. If there is only one {@link Object}
+	 * passed, then
+	 * that object will be treated as the message, and the source tag will
+	 * be
+	 * determined automatically. If there are two {@link Object}s passed,
+	 * the first
 	 * is treated as the source tag, the second the message. If three
-	 * {@link Object}s are passed, then a {@link Dialog} will be shown displaying
-	 * the message and the third {@link Object} will be the {@link Frame}. Null may
-	 * be passed to use a default {@link Frame}. Any {@link Object}s beyond 3 will
+	 * {@link Object}s are passed, then a {@link Dialog} will be shown
+	 * displaying
+	 * the message and the third {@link Object} will be the {@link Frame}.
+	 * Null may
+	 * be passed to use a default {@link Frame}. Any {@link Object}s
+	 * beyond 3 will
 	 * be ignored.
 	 * 
 	 * @param args {@link Object} array of options. ([Source], Message,
@@ -164,26 +230,33 @@ public class Log {
 	/**
 	 * Outputs a debug message.
 	 * 
-	 * @param source  Source tag of message. If <code>null</code>, a source will be
+	 * @param source  Source tag of message. If <code>null</code>, a
+	 *                source will be
 	 *                automatically determined.
 	 * @param message Message to print.
 	 */
 	public void debug(Object source, Object message) {
 		message = contructMessage(source, message);
 		writeLog("debug", message);
-		if (mLogLevel >= LEVEL_DEBUG)
+		if (mLogLevel >= DEBUG)
 			println("[DEBUG] " + message);
 	}
 
 
 	/**
-	 * Variable arguments function. If there is only one {@link Object} passed, then
-	 * that object will be treated as the message, and the source tag will be
-	 * determined automatically. If there are two {@link Object}s passed, the first
+	 * Variable arguments function. If there is only one {@link Object}
+	 * passed, then
+	 * that object will be treated as the message, and the source tag will
+	 * be
+	 * determined automatically. If there are two {@link Object}s passed,
+	 * the first
 	 * is treated as the source tag, the second the message. If three
-	 * {@link Object}s are passed, then a {@link Dialog} will be shown displaying
-	 * the message and the third {@link Object} will be the {@link Frame}. Null may
-	 * be passed to use a default {@link Frame}. Any {@link Object}s beyond 3 will
+	 * {@link Object}s are passed, then a {@link Dialog} will be shown
+	 * displaying
+	 * the message and the third {@link Object} will be the {@link Frame}.
+	 * Null may
+	 * be passed to use a default {@link Frame}. Any {@link Object}s
+	 * beyond 3 will
 	 * be ignored.
 	 * 
 	 * @param args {@link Object} array of options. ([Source], Message,
@@ -203,52 +276,44 @@ public class Log {
 	/**
 	 * Outputs an error message.
 	 * 
-	 * @param source  Source tag of message. If <code>null</code>, a source will be
+	 * @param source  Source tag of message. If <code>null</code>, a
+	 *                source will be
 	 *                automatically determined.
 	 * @param message Message to print.
 	 */
 	public void error(Object source, Object message) {
 		message = contructMessage(source, message);
 		writeLog("error", message);
-		if (mLogLevel >= LEVEL_ERROR)
+		if (mLogLevel >= ERROR)
 			println("[ERROR] " + message);
 	}
 
 
 	/**
-	 * @return Formatted {@link String} representing the current date. (yyMMdd)
+	 * Get a consistent static Log.
+	 * @return
 	 */
-	public static String getDateStamp() {
-		return DateTimeFormatter.ofPattern("yyMMdd").format(LocalDateTime.now());
+	public static Log get() {
+		if (mMe == null)
+			mMe = new Log();
+		return mMe;
 	}
 
 
 	/**
-	 * @return {@link Integer} representing the line number of the code that calls
-	 *         this function.
-	 */
-	public static int getLineNumber() {
-		return (new Throwable()).getStackTrace()[1].getLineNumber();
-
-	}
-
-
-	/**
-	 * @return Formatted {@link String} representing the current time. (HH_mm_ss)
-	 */
-	public static String getTimeStamp() {
-		return DateTimeFormatter.ofPattern("HH_mm_ss").format(LocalDateTime.now());
-	}
-
-
-	/**
-	 * Variable arguments function. If there is only one {@link Object} passed, then
-	 * that object will be treated as the message, and the source tag will be
-	 * determined automatically. If there are two {@link Object}s passed, the first
+	 * Variable arguments function. If there is only one {@link Object}
+	 * passed, then
+	 * that object will be treated as the message, and the source tag will
+	 * be
+	 * determined automatically. If there are two {@link Object}s passed,
+	 * the first
 	 * is treated as the source tag, the second the message. If three
-	 * {@link Object}s are passed, then a {@link Dialog} will be shown displaying
-	 * the message and the third {@link Object} will be the {@link Frame}. Null may
-	 * be passed to use a default {@link Frame}. Any {@link Object}s beyond 3 will
+	 * {@link Object}s are passed, then a {@link Dialog} will be shown
+	 * displaying
+	 * the message and the third {@link Object} will be the {@link Frame}.
+	 * Null may
+	 * be passed to use a default {@link Frame}. Any {@link Object}s
+	 * beyond 3 will
 	 * be ignored.
 	 * 
 	 * @param args {@link Object} array of options. ([Source], Message,
@@ -268,41 +333,24 @@ public class Log {
 	/**
 	 * Outputs an info message.
 	 * 
-	 * @param source  Source tag of message. If <code>null</code>, a source will be
+	 * @param source  Source tag of message. If <code>null</code>, a
+	 *                source will be
 	 *                automatically determined.
 	 * @param message Message to print.
 	 */
 	public void info(Object source, Object message) {
 		message = contructMessage(source, message);
 		writeLog("info", message);
-		if (mLogLevel >= LEVEL_INFO)
+		if (mLogLevel >= INFO)
 			println("[INFO] " + message);
 	}
 
 
 	/**
-	 * Prints to <code>System.out.print()</code>.
-	 * 
-	 * @param message Message to print.
-	 */
-	public static void print(Object message) {
-		System.out.print(message);
-	}
-
-
-	/**
-	 * Prints to <code>System.out.println()</code>.
-	 * 
-	 * @param message Message to print.
-	 */
-	public static void println(Object message) {
-		System.out.println(message);
-	}
-
-
-	/**
-	 * Set the logging level. Logs that are greater than this level will not be
-	 * printed to console, but will still be written to file if writing is enabled.
+	 * Set the logging level. Logs that are greater than this level will
+	 * not be
+	 * printed to console, but will still be written to file if writing is
+	 * enabled.
 	 * 
 	 * @param level
 	 */
@@ -312,7 +360,8 @@ public class Log {
 
 
 	/**
-	 * Creates a Message Dialog with a default Frame. Effectively the same as
+	 * Creates a Message Dialog with a default Frame. Effectively the same
+	 * as
 	 * <code>showMesssageDialog(<b>null</b>, message)</code>.
 	 * 
 	 * @param message Message to display in the dialog.
@@ -325,8 +374,10 @@ public class Log {
 	/**
 	 * Creates a Message Dialog wth the given parent and message.
 	 * 
-	 * @param parentComponent determines the Frame in which the dialog is displayed;
-	 *                        if null, or if the parentComponent has no Frame, a
+	 * @param parentComponent determines the Frame in which the dialog is
+	 *                        displayed;
+	 *                        if null, or if the parentComponent has no
+	 *                        Frame, a
 	 *                        default Frame is used.
 	 * @param message         Message to display in the dialog.
 	 */
@@ -363,13 +414,19 @@ public class Log {
 
 
 	/**
-	 * Variable arguments function. If there is only one {@link Object} passed, then
-	 * that object will be treated as the message, and the source tag will be
-	 * determined automatically. If there are two {@link Object}s passed, the first
+	 * Variable arguments function. If there is only one {@link Object}
+	 * passed, then
+	 * that object will be treated as the message, and the source tag will
+	 * be
+	 * determined automatically. If there are two {@link Object}s passed,
+	 * the first
 	 * is treated as the source tag, the second the message. If three
-	 * {@link Object}s are passed, then a {@link Dialog} will be shown displaying
-	 * the message and the third {@link Object} will be the {@link Frame}. Null may
-	 * be passed to use a default {@link Frame}. Any {@link Object}s beyond 3 will
+	 * {@link Object}s are passed, then a {@link Dialog} will be shown
+	 * displaying
+	 * the message and the third {@link Object} will be the {@link Frame}.
+	 * Null may
+	 * be passed to use a default {@link Frame}. Any {@link Object}s
+	 * beyond 3 will
 	 * be ignored.
 	 * 
 	 * @param args {@link Object} array of options. ([Source], Message,
@@ -389,14 +446,15 @@ public class Log {
 	/**
 	 * Outputs a warning message.
 	 * 
-	 * @param source  Source tag of message. If <code>null</code>, a source will be
+	 * @param source  Source tag of message. If <code>null</code>, a
+	 *                source will be
 	 *                automatically determined.
 	 * @param message Message to print.
 	 */
 	public void warn(Object source, Object message) {
 		message = contructMessage(source, message);
 		writeLog("warning", message);
-		if (mLogLevel >= LEVEL_WARNING)
+		if (mLogLevel >= WARNING)
 			println("[WARNING] " + message);
 	}
 

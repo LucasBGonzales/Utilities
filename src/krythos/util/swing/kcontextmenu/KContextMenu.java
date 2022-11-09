@@ -29,7 +29,7 @@ public class KContextMenu {
 	 */
 	public static void main(String... args) {
 		Log log = new Log(false);
-		log.setLevel(Log.LEVEL_DEBUG);
+		log.setLevel(Log.DEBUG);
 
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
